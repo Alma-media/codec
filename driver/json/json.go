@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io"
 
-	codec "github.com/Alma-media/go-codec"
-	"github.com/Alma-media/go-codec/driver"
+	"github.com/tiny-go/codec"
+	"github.com/tiny-go/codec/driver"
 )
 
 // DataTypeJSON contains JSON codec data type.

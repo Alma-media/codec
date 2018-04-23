@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	codec "github.com/Alma-media/go-codec"
+	"github.com/tiny-go/codec"
 )
 
 var (

@@ -4,8 +4,8 @@ import (
 	"encoding/xml"
 	"io"
 
-	codec "github.com/Alma-media/go-codec"
-	"github.com/Alma-media/go-codec/driver"
+	"github.com/tiny-go/codec"
+	"github.com/tiny-go/codec/driver"
 )
 
 // DataTypeXML contains XML codec data type.
