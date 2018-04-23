@@ -9,12 +9,12 @@ import (
 )
 
 var (
-	codecs   globalRegistry
 	codecsMu sync.RWMutex
+	codecs   = globalRegistry{}
 )
 
 // Global returns global codec registry.
-func Global() Registry {
+func Global() codec.Registry {
 	// return an interface (it is safe / read only)
 	return codecs
 }
@@ -25,7 +25,7 @@ func Register(mime string, f codecInitFunc) {
 	defer codecsMu.Unlock()
 
 	if _, ok := codecs[mime]; ok {
-		panic(fmt.Sprintf("codec with MimeType %q already registered", mime))
+		panic(fmt.Sprintf("codec with mime type %q already registered", mime))
 	}
 	codecs[mime] = f
 }
@@ -46,11 +46,6 @@ func Default(mime string) error {
 	return nil
 }
 
-// Registry represents codec registry/list.
-type Registry interface {
-	Get(mime string) codec.Codec
-}
-
 // codecInitFunc is a codec constructor which can either return a singleton instance
 // or initialize a new codec for every request (for example multipart, because each
 // request has its own unique boundary).
@@ -60,10 +55,10 @@ type codecInitFunc func(string) codec.Codec
 // and retrieve them by mime type.
 type globalRegistry map[string]codecInitFunc
 
-// Get appropriate codec by provided MimeType, if there is no exact match (that
-// is possible using codecs such as Multipart), it tries to detect a codec in an
-// opposite way, comparing default codec MimeType to the provided argument.
-func (r globalRegistry) Get(mime string) codec.Codec {
+// Lookup searches for appropriate codec by MimeType, if there is no exact match
+// (that is possible using codecs such as Multipart), it tries to detect a codec
+// in an opposite way, comparing default codec MimeType to the provided argument.
+func (r globalRegistry) Lookup(mime string) codec.Codec {
 	codecsMu.Lock()
 	defer codecsMu.Unlock()
 	// find strict match
