@@ -1,2 +1,2 @@
-# go-codec
-go-codec is a set of tools around data encoders/decoders
+# codec
+Package contains a set of tools around data encoders/decoders
