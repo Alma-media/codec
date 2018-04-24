@@ -9,7 +9,7 @@ import (
 )
 
 // compile time type check
-var _ codec.Registry = globalRegistry{}
+var _ codec.Registry = &SmartRegistry{}
 
 var (
 	codecJSON      = &mockJSON{}
@@ -44,7 +44,7 @@ func (m *mockMultipart) MimeType() string { return "multipart/form-data" }
 func TestDefault(t *testing.T) {
 	t.Run("Given global codec registry", func(t *testing.T) {
 		// clean up codec registry
-		defer func() { codecs = globalRegistry{} }()
+		defer func() { codecs = NewSmartRegistry() }()
 
 		t.Run("test if error is returned trying to set non-existing codec as a default", func(t *testing.T) {
 			if err := Default("application/json"); err == errors.New("codec \"application/json\" is not registered") {
@@ -64,7 +64,7 @@ func TestDefault(t *testing.T) {
 func TestGlobal(t *testing.T) {
 	t.Run("Given global codec registry", func(t *testing.T) {
 		// clean up codec registry
-		defer func() { codecs = globalRegistry{} }()
+		defer func() { codecs = NewSmartRegistry() }()
 
 		Register("application/json", func(string) codec.Codec { return codecJSON })
 		Register("multipart/form-data", func(string) codec.Codec { return codecMultipart })
@@ -109,18 +109,18 @@ func TestRegister(t *testing.T) {
 	t.Run("Given global codec registry", func(t *testing.T) {
 		t.Run("test if codecs with unique mime type are registered successfully", func(t *testing.T) {
 			// clean up codec registry
-			defer func() { codecs = globalRegistry{} }()
+			defer func() { codecs = NewSmartRegistry() }()
 
 			Register("application/json", func(string) codec.Codec { return codecJSON })
 			Register("application/xml", func(string) codec.Codec { return codecXML })
-			if len(codecs) != 2 {
+			if len(codecs.codecs) != 2 {
 				t.Error("registry chould contain exactly 2 codecs")
 			}
-			jsonFunc, ok := codecs["application/json"]
+			jsonFunc, ok := codecs.codecs["application/json"]
 			if !ok || jsonFunc("") != codecJSON {
 				t.Error("codec with mime type \"application/json\" was expected to be available")
 			}
-			xmlFunc, ok := codecs["application/xml"]
+			xmlFunc, ok := codecs.codecs["application/xml"]
 			if !ok || xmlFunc("") != codecXML {
 				t.Error("codec with mime type \"application/xml\" was expected to be available")
 			}
@@ -128,7 +128,7 @@ func TestRegister(t *testing.T) {
 
 		t.Run("test if panics trying to register codec with non-unique mime type", func(t *testing.T) {
 			// clean up codec registry
-			defer func() { codecs = globalRegistry{} }()
+			defer func() { codecs = NewSmartRegistry() }()
 
 			defer func() {
 				if r := recover(); r == nil {
