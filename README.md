@@ -6,6 +6,15 @@
 
 Package contains a set of tools around data encoders/decoders
 
+### Installation
+```sh
+go get -u github.com/tiny-go/codec
+```
+
+### Supported drivers
+- `JSON`
+- `XML`
+
 [circleci-badge]: https://circleci.com/gh/tiny-go/codec.svg?style=shield
 [circleci-link]: https://circleci.com/gh/tiny-go/codec
 [report-badge]: https://goreportcard.com/badge/github.com/tiny-go/codec
