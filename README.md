@@ -12,8 +12,9 @@ go get -u github.com/tiny-go/codec
 ```
 
 ### Supported codecs
-- `JSON`
-- `XML`
+- `JSON` (application/json)
+- `XML` (application/xml)
+- `TEXT` (text/plain)
 
 [circleci-badge]: https://circleci.com/gh/tiny-go/codec.svg?style=shield
 [circleci-link]: https://circleci.com/gh/tiny-go/codec
