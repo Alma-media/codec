@@ -116,3 +116,15 @@ func Test_Decoder(t *testing.T) {
 		})
 	})
 }
+
+func Test_MimeType(t *testing.T) {
+	t.Run("Given text/plain codec", func(t *testing.T) {
+		codec := new(Text)
+
+		t.Run("test if codec returns expected MimeType", func(t *testing.T) {
+			if contentType := codec.MimeType(); contentType != DataTypeText {
+				t.Errorf("codec returns unexpected content type %q", contentType)
+			}
+		})
+	})
+}
