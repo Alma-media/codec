@@ -19,7 +19,11 @@ var global = &Text{}
 type Text struct{}
 
 // Encoder creates text encoder.
-func (t *Text) Encoder(w io.Writer) codec.Encoder {
+func (Text) Encoder(w io.Writer) codec.Encoder {
+	return NewEncoder(w)
+}
+
+func NewEncoder(w io.Writer) codec.Encoder {
 	return codec.EncoderFunc(func(src interface{}) error {
 		if marshaler, ok := src.(encoding.TextMarshaler); ok {
 			data, err := marshaler.MarshalText()
@@ -35,7 +39,11 @@ func (t *Text) Encoder(w io.Writer) codec.Encoder {
 }
 
 // Decoder creates text decoder.
-func (t *Text) Decoder(r io.Reader) codec.Decoder {
+func (Text) Decoder(r io.Reader) codec.Decoder {
+	return NewDecoder(r)
+}
+
+func NewDecoder(r io.Reader) codec.Decoder {
 	return codec.DecoderFunc(func(recv interface{}) error {
 		var buf = new(bytes.Buffer)
 		if _, err := buf.ReadFrom(r); err != nil {
@@ -58,7 +66,7 @@ func (t *Text) Decoder(r io.Reader) codec.Decoder {
 }
 
 // MimeType returns the mime type of the codec.
-func (t *Text) MimeType() string { return DataTypeText }
+func (Text) MimeType() string { return DataTypeText }
 
 func init() {
 	// since text is a stateless codec we can always return the same instance in order
